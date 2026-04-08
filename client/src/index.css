@@ -10,9 +10,9 @@
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
-  --accent-primary: #667eea;
-  --accent-secondary: #764ba2;
-  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --accent-primary: #4f46e5;
+  --accent-secondary: #7e22ce;
+  --gradient-primary: linear-gradient(135deg, #4f46e5 0%, #7e22ce 100%);
   --gradient-hero: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f8fafc 100%);
   --plan-basic: #4facfe;
   --plan-standard: #667eea;
@@ -36,29 +36,29 @@
   --gradient-primary: linear-gradient(135deg, #e50914 0%, #b20a2c 100%);
 }
 .theme-channels {
-  --accent-primary: #00c6ff;
-  --accent-secondary: #0072ff;
-  --gradient-primary: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+  --accent-primary: #0284c7;
+  --accent-secondary: #0369a1;
+  --gradient-primary: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
 }
 .theme-plans {
-  --accent-primary: #11998e;
-  --accent-secondary: #38ef7d;
-  --gradient-primary: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  --accent-primary: #059669;
+  --accent-secondary: #047857;
+  --gradient-primary: linear-gradient(135deg, #059669 0%, #047857 100%);
 }
 .theme-dashboard {
-  --accent-primary: #f093fb;
-  --accent-secondary: #f5576c;
-  --gradient-primary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --accent-primary: #9333ea;
+  --accent-secondary: #c026d3;
+  --gradient-primary: linear-gradient(135deg, #9333ea 0%, #c026d3 100%);
 }
 .theme-subscriptions {
-  --accent-primary: #84fab0;
-  --accent-secondary: #8fd3f4;
-  --gradient-primary: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+  --accent-primary: #0f766e;
+  --accent-secondary: #0369a1;
+  --gradient-primary: linear-gradient(135deg, #0f766e 0%, #0369a1 100%);
 }
 .theme-admin {
-  --accent-primary: #ffb75e;
-  --accent-secondary: #ed8f03;
-  --gradient-primary: linear-gradient(135deg, #ffb75e 0%, #ed8f03 100%);
+  --accent-primary: #d97706;
+  --accent-secondary: #b45309;
+  --gradient-primary: linear-gradient(135deg, #d97706 0%, #b45309 100%);
 }
 
 /* Global Body Background Variations */
