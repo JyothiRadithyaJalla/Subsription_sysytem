@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { HiFilm, HiMenu, HiX, HiUser, HiLogout, HiViewGrid, HiCreditCard, HiCollection, HiDesktopComputer } from 'react-icons/hi';
+import { HiFilm, HiMenu, HiX, HiUser, HiLogout, HiViewGrid, HiCreditCard, HiCollection, HiDesktopComputer, HiHome } from 'react-icons/hi';
 import { useState } from 'react';
 
 const Navbar = () => {
@@ -25,6 +25,9 @@ const Navbar = () => {
         <div className={`navbar-links ${mobileOpen ? 'active' : ''}`}>
           {user ? (
             <>
+              <Link to="/" className="nav-link" onClick={() => setMobileOpen(false)}>
+                <HiHome /> Home
+              </Link>
               <Link to="/dashboard" className="nav-link" onClick={() => setMobileOpen(false)}>
                 <HiViewGrid /> Dashboard
               </Link>

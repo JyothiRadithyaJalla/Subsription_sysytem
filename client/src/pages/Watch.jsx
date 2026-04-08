@@ -61,6 +61,7 @@ const Watch = () => {
         .watch-page {
           background: #0f0f13;
           min-height: 100vh;
+          color: #ffffff;
         }
         .watch-header {
           padding: 1rem 2rem;
