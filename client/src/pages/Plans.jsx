@@ -1,9 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { plansAPI, subscriptionsAPI, paymentAPI } from '../services/api';
-import { HiCheck, HiStar, HiLightningBolt, HiShieldCheck } from 'react-icons/hi';
-import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 const Plans = () => {
   const { user } = useAuth();
@@ -12,6 +7,19 @@ const Plans = () => {
   const [activeSub, setActiveSub] = useState(null);
   const [loading, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(null);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5 } }
+  };
 
   useEffect(() => {
     fetchData();
@@ -130,22 +138,34 @@ const Plans = () => {
   return (
     <div className="plans-page theme-plans">
       <div className="container">
-        <div className="section-header centered">
+        <motion.div 
+          className="section-header centered"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           <h1>Choose Your <span className="gradient-text">Perfect Plan</span></h1>
           <p>Unlock unlimited entertainment with our flexible subscription plans</p>
-        </div>
+        </motion.div>
 
-        <div className="plans-grid">
+        <motion.div 
+          className="plans-grid"
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
           {plans.map((plan, index) => {
             const isPopular = index === 1;
             const isCurrentPlan = activeSub && activeSub.plan_id === plan.id;
             const features = Array.isArray(plan.features) ? plan.features : (typeof plan.features === 'string' ? JSON.parse(plan.features) : []);
 
             return (
-              <div
+              <motion.div
                 key={plan.id}
                 className={`plan-card ${isPopular ? 'popular' : ''} ${isCurrentPlan ? 'current' : ''}`}
                 style={{ '--plan-color': planColors[index % planColors.length] || 'var(--plan-basic)' }}
+                variants={cardVariants}
+                whileHover={{ y: -15, transition: { duration: 0.3 } }}
               >
                 {isPopular && <div className="popular-badge">Most Popular</div>}
                 {isCurrentPlan && <div className="current-badge">Current Plan</div>}
@@ -193,10 +213,10 @@ const Plans = () => {
                     ? 'Current Plan'
                     : `Choose ${plan.name}`}
                 </button>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

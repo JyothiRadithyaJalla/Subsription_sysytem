@@ -1,9 +1,4 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { subscriptionsAPI, contentAPI } from '../services/api';
-import { HiFilm, HiDesktopComputer, HiCalendar, HiClock, HiStar, HiCreditCard, HiPlay } from 'react-icons/hi';
-import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -13,6 +8,19 @@ const Dashboard = () => {
   const [featuredMovies, setFeaturedMovies] = useState([]);
   const [featuredChannels, setFeaturedChannels] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 15 },
+    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.4 } }
+  };
 
   useEffect(() => {
     fetchData();
@@ -66,16 +74,26 @@ const Dashboard = () => {
     <div className="dashboard-page theme-dashboard">
       <div className="container">
         {/* Welcome Section */}
-        <div className="dashboard-welcome">
+        <motion.div 
+          className="dashboard-welcome"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="welcome-text">
             <h1>Welcome back, <span className="gradient-text">{user?.name}</span> 👋</h1>
             <p>Here's what's happening with your StreamFlix account</p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Subscription Status */}
-        <div className="dashboard-grid">
-          <div className="sub-status-card">
+        <motion.div 
+          className="dashboard-grid"
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
+          <motion.div className="sub-status-card" variants={itemVariants}>
             {hasSubscription ? (
               <>
                 <div className="sub-status-header">
@@ -106,7 +124,12 @@ const Dashboard = () => {
                     <span>{getDaysRemaining()} days remaining</span>
                   </div>
                   <div className="progress-bar">
-                    <div className="progress-fill" style={{ width: `${getProgress()}%` }}></div>
+                    <motion.div 
+                      className="progress-fill" 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${getProgress()}%` }}
+                      transition={{ duration: 1, ease: 'easeOut', delay: 0.5 }}
+                    ></motion.div>
                   </div>
                 </div>
                 <div className="sub-features">
@@ -128,43 +151,55 @@ const Dashboard = () => {
                 </Link>
               </div>
             )}
-          </div>
+          </motion.div>
 
           {/* Quick Stats */}
           <div className="quick-stats">
-            <div className="stat-card" style={{ '--accent': '#667eea' }}>
-              <HiFilm className="stat-icon" />
-              <div className="stat-info">
-                <span className="stat-value">{featuredMovies.length}+</span>
-                <span className="stat-label">Featured Movies</span>
-              </div>
-            </div>
-            <div className="stat-card" style={{ '--accent': '#f093fb' }}>
-              <HiDesktopComputer className="stat-icon" />
-              <div className="stat-info">
-                <span className="stat-value">{featuredChannels.length}+</span>
-                <span className="stat-label">Featured Channels</span>
-              </div>
-            </div>
-            <div className="stat-card" style={{ '--accent': '#4facfe' }}>
-              <HiClock className="stat-icon" />
-              <div className="stat-info">
-                <span className="stat-value">{getDaysRemaining()}</span>
-                <span className="stat-label">Days Remaining</span>
-              </div>
-            </div>
+            {[
+              { icon: <HiFilm />, color: '#667eea', val: `${featuredMovies.length}+`, label: "Featured Movies" },
+              { icon: <HiDesktopComputer />, color: '#f093fb', val: `${featuredChannels.length}+`, label: "Featured Channels" },
+              { icon: <HiClock />, color: '#4facfe', val: getDaysRemaining(), label: "Days Remaining" }
+            ].map((s, i) => (
+              <motion.div 
+                className="stat-card" 
+                key={i}
+                variants={itemVariants}
+                whileHover={{ scale: 1.03, x: 5 }}
+                style={{ '--accent': s.color }}
+              >
+                <div className="stat-icon">{s.icon}</div>
+                <div className="stat-info">
+                  <span className="stat-value">{s.val}</span>
+                  <span className="stat-label">{s.label}</span>
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Featured Movies */}
-        <section className="dashboard-section">
+        <motion.section 
+          className="dashboard-section"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="section-header-inline">
             <h2><HiFilm /> Featured Movies</h2>
             <Link to="/movies" className="view-all-link">View All →</Link>
           </div>
           <div className="content-scroll">
-            {featuredMovies.map((movie) => (
-              <div key={movie.id} className="movie-card">
+            {featuredMovies.map((movie, i) => (
+              <motion.div 
+                key={movie.id} 
+                className="movie-card"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                whileHover={{ y: -5 }}
+              >
                 <div className="movie-poster">
                   <img src={movie.thumbnail_url} alt={movie.title} loading="lazy" />
                   <div className="movie-overlay">
@@ -181,20 +216,34 @@ const Dashboard = () => {
                   <h4>{movie.title}</h4>
                   <p>{movie.genre} • {movie.release_year}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </section>
+        </motion.section>
 
         {/* Featured Channels */}
-        <section className="dashboard-section">
+        <motion.section 
+          className="dashboard-section"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <div className="section-header-inline">
             <h2><HiDesktopComputer /> Featured Channels</h2>
             <Link to="/channels" className="view-all-link">View All →</Link>
           </div>
           <div className="content-scroll">
-            {featuredChannels.map((channel) => (
-              <div key={channel.id} className="channel-card">
+            {featuredChannels.map((channel, i) => (
+              <motion.div 
+                key={channel.id} 
+                className="channel-card"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                whileHover={{ y: -5 }}
+              >
                 <div className="channel-logo">
                   <img src={channel.logo_url} alt={channel.name} loading="lazy" />
                   {channel.is_live && <span className="live-badge">● LIVE</span>}
@@ -204,10 +253,10 @@ const Dashboard = () => {
                   <p>{channel.category}</p>
                   <span className="channel-plan">{channel.plan_name}</span>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </section>
+        </motion.section>
       </div>
     </div>
   );

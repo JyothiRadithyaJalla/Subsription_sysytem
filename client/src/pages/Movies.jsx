@@ -1,8 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { contentAPI, subscriptionsAPI } from '../services/api';
-import { HiFilm, HiSearch, HiStar, HiPlay, HiLockClosed, HiFilter } from 'react-icons/hi';
-import toast from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Movies = () => {
   const navigate = useNavigate();
@@ -13,6 +9,19 @@ const Movies = () => {
   const [loading, setLoading] = useState(true);
   const [activeSub, setActiveSub] = useState(null);
   const [selectedMovie, setSelectedMovie] = useState(null);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+  };
 
   useEffect(() => {
     fetchData();
@@ -58,13 +67,23 @@ const Movies = () => {
   return (
     <div className="content-page theme-movies">
       <div className="container">
-        <div className="content-header">
+        <motion.div 
+          className="content-header"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <h1><HiFilm /> <span className="gradient-text">Movies</span></h1>
           <p>Explore our vast collection of movies</p>
-        </div>
+        </motion.div>
 
         {/* Filters */}
-        <div className="content-filters">
+        <motion.div 
+          className="content-filters"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
           <div className="search-bar">
             <HiSearch className="search-icon" />
             <input
@@ -91,7 +110,7 @@ const Movies = () => {
               </button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Movies Grid */}
         {loading ? (
@@ -99,87 +118,115 @@ const Movies = () => {
             <div className="loader"></div>
           </div>
         ) : (
-          <div className="movies-grid">
-            {movies.map((movie) => (
-              <div
-                key={movie.id}
-                className={`movie-card-large ${!canAccess(movie) ? 'locked' : ''}`}
-                onClick={() => setSelectedMovie(movie)}
-              >
-                <div className="movie-poster">
-                  <img src={movie.thumbnail_url} alt={movie.title} loading="lazy" />
-                  <div className="movie-overlay">
-                    {canAccess(movie) ? (
-                      <button className="play-btn" onClick={(e) => { e.stopPropagation(); navigate(`/watch/movie/${movie.id}`); }}>
-                        <HiPlay />
-                      </button>
-                    ) : (
-                      <div className="lock-overlay">
-                        <HiLockClosed />
-                        <span>Requires {movie.plan_name}</span>
-                      </div>
-                    )}
+          <motion.div 
+            className="movies-grid"
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+          >
+            <AnimatePresence>
+              {movies.map((movie) => (
+                <motion.div
+                  key={movie.id}
+                  className={`movie-card-large ${!canAccess(movie) ? 'locked' : ''}`}
+                  onClick={() => setSelectedMovie(movie)}
+                  variants={itemVariants}
+                  layout
+                  whileHover={{ scale: 1.02, y: -5 }}
+                >
+                  <div className="movie-poster">
+                    <img src={movie.thumbnail_url} alt={movie.title} loading="lazy" />
+                    <div className="movie-overlay">
+                      {canAccess(movie) ? (
+                        <button className="play-btn" onClick={(e) => { e.stopPropagation(); navigate(`/watch/movie/${movie.id}`); }}>
+                          <HiPlay />
+                        </button>
+                      ) : (
+                        <div className="lock-overlay">
+                          <HiLockClosed />
+                          <span>Requires {movie.plan_name}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="movie-rating">
+                      <HiStar /> {movie.rating}
+                    </div>
+                    {movie.is_featured && <div className="featured-badge">⭐ Featured</div>}
                   </div>
-                  <div className="movie-rating">
-                    <HiStar /> {movie.rating}
+                  <div className="movie-info">
+                    <h3>{movie.title}</h3>
+                    <p className="movie-meta">
+                      {movie.genre} • {movie.release_year} • {movie.duration_minutes}min
+                    </p>
+                    <p className="movie-desc">{movie.description}</p>
+                    <div className="movie-plan-tag">{movie.plan_name}</div>
                   </div>
-                  {movie.is_featured && <div className="featured-badge">⭐ Featured</div>}
-                </div>
-                <div className="movie-info">
-                  <h3>{movie.title}</h3>
-                  <p className="movie-meta">
-                    {movie.genre} • {movie.release_year} • {movie.duration_minutes}min
-                  </p>
-                  <p className="movie-desc">{movie.description}</p>
-                  <div className="movie-plan-tag">{movie.plan_name}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         )}
 
         {movies.length === 0 && !loading && (
-          <div className="empty-state">
+          <motion.div 
+            className="empty-state"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
             <HiFilm />
             <h3>No movies found</h3>
             <p>Try adjusting your filters or search query</p>
-          </div>
+          </motion.div>
         )}
       </div>
 
       {/* Movie Detail Modal */}
-      {selectedMovie && (
-        <div className="modal-backdrop" onClick={() => setSelectedMovie(null)}>
-          <div className="modal-content movie-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setSelectedMovie(null)}>✕</button>
-            <div className="modal-poster">
-              <img src={selectedMovie.thumbnail_url} alt={selectedMovie.title} />
-            </div>
-            <div className="modal-details">
-              <h2>{selectedMovie.title}</h2>
-              <div className="modal-meta">
-                <span className="modal-rating"><HiStar /> {selectedMovie.rating}</span>
-                <span>{selectedMovie.genre}</span>
-                <span>{selectedMovie.release_year}</span>
-                <span>{selectedMovie.duration_minutes} min</span>
+      <AnimatePresence>
+        {selectedMovie && (
+          <motion.div 
+            className="modal-backdrop" 
+            onClick={() => setSelectedMovie(null)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="modal-content movie-modal" 
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            >
+              <button className="modal-close" onClick={() => setSelectedMovie(null)}>✕</button>
+              <div className="modal-poster">
+                <img src={selectedMovie.thumbnail_url} alt={selectedMovie.title} />
               </div>
-              <p className="modal-description">{selectedMovie.description}</p>
-              <div className="modal-plan">
-                <span>Required Plan: <strong>{selectedMovie.plan_name}</strong></span>
+              <div className="modal-details">
+                <h2>{selectedMovie.title}</h2>
+                <div className="modal-meta">
+                  <span className="modal-rating"><HiStar /> {selectedMovie.rating}</span>
+                  <span>{selectedMovie.genre}</span>
+                  <span>{selectedMovie.release_year}</span>
+                  <span>{selectedMovie.duration_minutes} min</span>
+                </div>
+                <p className="modal-description">{selectedMovie.description}</p>
+                <div className="modal-plan">
+                  <span>Required Plan: <strong>{selectedMovie.plan_name}</strong></span>
+                </div>
+                {canAccess(selectedMovie) ? (
+                  <button className="btn btn-primary btn-lg" onClick={() => navigate(`/watch/movie/${selectedMovie.id}`)}>
+                    <HiPlay /> Watch Now
+                  </button>
+                ) : (
+                  <button className="btn btn-outline btn-lg" onClick={() => window.location.href = '/plans'}>
+                    <HiLockClosed /> Upgrade to {selectedMovie.plan_name}
+                  </button>
+                )}
               </div>
-              {canAccess(selectedMovie) ? (
-                <button className="btn btn-primary btn-lg" onClick={() => navigate(`/watch/movie/${selectedMovie.id}`)}>
-                  <HiPlay /> Watch Now
-                </button>
-              ) : (
-                <button className="btn btn-outline btn-lg" onClick={() => window.location.href = '/plans'}>
-                  <HiLockClosed /> Upgrade to {selectedMovie.plan_name}
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

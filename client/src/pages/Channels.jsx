@@ -1,8 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { contentAPI, subscriptionsAPI } from '../services/api';
-import { HiDesktopComputer, HiSearch, HiPlay, HiLockClosed, HiFilter } from 'react-icons/hi';
-import toast from 'react-hot-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Channels = () => {
   const navigate = useNavigate();
@@ -11,6 +7,19 @@ const Channels = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [loading, setLoading] = useState(true);
   const [activeSub, setActiveSub] = useState(null);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 15 },
+    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.4 } }
+  };
 
   useEffect(() => {
     fetchData();
@@ -55,13 +64,23 @@ const Channels = () => {
   return (
     <div className="content-page theme-channels">
       <div className="container">
-        <div className="content-header">
+        <motion.div 
+          className="content-header"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <h1><HiDesktopComputer /> <span className="gradient-text">TV Channels</span></h1>
           <p>Watch live TV channels from around the world</p>
-        </div>
+        </motion.div>
 
         {/* Category Filters */}
-        <div className="content-filters">
+        <motion.div 
+          className="content-filters"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
           <div className="genre-filters">
             <button
               className={`filter-chip ${selectedCategory === '' ? 'active' : ''}`}
@@ -79,7 +98,7 @@ const Channels = () => {
               </button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Channels Grid */}
         {loading ? (
@@ -87,47 +106,61 @@ const Channels = () => {
             <div className="loader"></div>
           </div>
         ) : (
-          <div className="channels-grid">
-            {channels.map((channel) => (
-              <div
-                key={channel.id}
-                className={`channel-card-large ${!canAccess(channel) ? 'locked' : ''}`}
-              >
-                <div className="channel-card-top">
-                  <div className="channel-logo-large">
-                    <img src={channel.logo_url} alt={channel.name} loading="lazy" />
+          <motion.div 
+            className="channels-grid"
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+          >
+            <AnimatePresence>
+              {channels.map((channel) => (
+                <motion.div
+                  key={channel.id}
+                  className={`channel-card-large ${!canAccess(channel) ? 'locked' : ''}`}
+                  variants={itemVariants}
+                  layout
+                  whileHover={{ y: -8, boxShadow: 'var(--shadow)' }}
+                >
+                  <div className="channel-card-top">
+                    <div className="channel-logo-large">
+                      <img src={channel.logo_url} alt={channel.name} loading="lazy" />
+                    </div>
+                    {channel.is_live && <span className="live-badge pulse">● LIVE</span>}
+                    {channel.is_featured && <span className="featured-badge-sm">Featured</span>}
                   </div>
-                  {channel.is_live && <span className="live-badge pulse">● LIVE</span>}
-                  {channel.is_featured && <span className="featured-badge-sm">Featured</span>}
-                </div>
-                <div className="channel-card-body">
-                  <h3>{channel.name}</h3>
-                  <p className="channel-desc">{channel.description}</p>
-                  <div className="channel-footer">
-                    <span className="channel-category">{channel.category}</span>
-                    <span className="channel-plan-badge">{channel.plan_name}</span>
+                  <div className="channel-card-body">
+                    <h3>{channel.name}</h3>
+                    <p className="channel-desc">{channel.description}</p>
+                    <div className="channel-footer">
+                      <span className="channel-category">{channel.category}</span>
+                      <span className="channel-plan-badge">{channel.plan_name}</span>
+                    </div>
+                    {canAccess(channel) ? (
+                      <button className="btn btn-primary btn-sm btn-full" onClick={() => navigate(`/watch/channel/${channel.id}`)}>
+                        <HiPlay /> Watch Now
+                      </button>
+                    ) : (
+                      <button className="btn btn-outline btn-sm btn-full" onClick={() => window.location.href = '/plans'}>
+                        <HiLockClosed /> Upgrade to Watch
+                      </button>
+                    )}
                   </div>
-                  {canAccess(channel) ? (
-                    <button className="btn btn-primary btn-sm btn-full" onClick={() => navigate(`/watch/channel/${channel.id}`)}>
-                      <HiPlay /> Watch Now
-                    </button>
-                  ) : (
-                    <button className="btn btn-outline btn-sm btn-full" onClick={() => window.location.href = '/plans'}>
-                      <HiLockClosed /> Upgrade to Watch
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         )}
 
         {channels.length === 0 && !loading && (
-          <div className="empty-state">
+          <motion.div 
+            className="empty-state"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
             <HiDesktopComputer />
             <h3>No channels found</h3>
             <p>Try selecting a different category</p>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>
