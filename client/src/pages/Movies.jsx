@@ -1,3 +1,8 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { contentAPI, subscriptionsAPI } from '../services/api';
+import { HiFilm, HiSearch, HiStar, HiPlay, HiLockClosed, HiFilter } from 'react-icons/hi';
+import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Movies = () => {

@@ -1,3 +1,9 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { plansAPI, subscriptionsAPI, paymentAPI } from '../services/api';
+import { HiCheck, HiStar, HiLightningBolt, HiShieldCheck } from 'react-icons/hi';
+import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
 const Plans = () => {

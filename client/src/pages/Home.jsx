@@ -1,3 +1,6 @@
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { HiFilm, HiStar, HiPlay, HiShieldCheck, HiLightningBolt } from 'react-icons/hi';
 import { motion } from 'framer-motion';
 
 const Home = () => {

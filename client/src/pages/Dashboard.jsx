@@ -1,3 +1,9 @@
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { subscriptionsAPI, contentAPI } from '../services/api';
+import { HiFilm, HiDesktopComputer, HiCalendar, HiClock, HiStar, HiCreditCard, HiPlay } from 'react-icons/hi';
+import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
 const Dashboard = () => {
