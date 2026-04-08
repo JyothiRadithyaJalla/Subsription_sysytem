@@ -15,8 +15,27 @@ import Admin from './pages/Admin';
 import Watch from './pages/Watch';
 import './index.css';
 
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+
 const AppRoutes = () => {
   const { user } = useAuth();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Remove existing theme classes
+    document.body.className = '';
+    
+    // Determine new theme class based on path
+    const path = location.pathname;
+    if (path.includes('/movies')) document.body.classList.add('theme-movies-bg');
+    else if (path.includes('/channels')) document.body.classList.add('theme-channels-bg');
+    else if (path.includes('/plans')) document.body.classList.add('theme-plans-bg');
+    else if (path.includes('/dashboard')) document.body.classList.add('theme-dashboard-bg');
+    else if (path.includes('/admin')) document.body.classList.add('theme-admin-bg');
+    else if (path.includes('/my-subscriptions')) document.body.classList.add('theme-subscriptions-bg');
+    else document.body.classList.add('theme-home-bg');
+  }, [location]);
 
   return (
     <>

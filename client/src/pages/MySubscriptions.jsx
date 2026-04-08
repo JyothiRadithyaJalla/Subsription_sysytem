@@ -68,7 +68,7 @@ const MySubscriptions = () => {
   }
 
   return (
-    <div className="subscriptions-page">
+    <div className="subscriptions-page theme-subscriptions">
       <div className="container">
         <div className="content-header">
           <h1><HiCollection /> <span className="gradient-text">My Subscriptions</span></h1>

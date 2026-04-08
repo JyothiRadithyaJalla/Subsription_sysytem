@@ -53,7 +53,7 @@ const Channels = () => {
   };
 
   return (
-    <div className="content-page">
+    <div className="content-page theme-channels">
       <div className="container">
         <div className="content-header">
           <h1><HiDesktopComputer /> <span className="gradient-text">TV Channels</span></h1>

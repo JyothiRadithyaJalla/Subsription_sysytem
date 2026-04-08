@@ -50,7 +50,7 @@ const Admin = () => {
   }
 
   return (
-    <div className="admin-page">
+    <div className="admin-page theme-admin">
       <div className="container">
         <div className="content-header">
           <h1>⚡ <span className="gradient-text">Admin Dashboard</span></h1>

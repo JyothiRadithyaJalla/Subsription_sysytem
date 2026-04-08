@@ -56,7 +56,7 @@ const Movies = () => {
   };
 
   return (
-    <div className="content-page">
+    <div className="content-page theme-movies">
       <div className="container">
         <div className="content-header">
           <h1><HiFilm /> <span className="gradient-text">Movies</span></h1>

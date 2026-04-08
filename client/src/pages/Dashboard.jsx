@@ -63,7 +63,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="dashboard-page">
+    <div className="dashboard-page theme-dashboard">
       <div className="container">
         {/* Welcome Section */}
         <div className="dashboard-welcome">

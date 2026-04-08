@@ -128,7 +128,7 @@ const Plans = () => {
   }
 
   return (
-    <div className="plans-page">
+    <div className="plans-page theme-plans">
       <div className="container">
         <div className="section-header centered">
           <h1>Choose Your <span className="gradient-text">Perfect Plan</span></h1>
